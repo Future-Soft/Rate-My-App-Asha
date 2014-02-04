@@ -119,6 +119,7 @@ public class Feedback {
     {
     	this.midlet = midlet;
     	this.contentID = contentID;
+    	FeedbackHelper.INSTANCE.setParams(midlet, contentID);
     	new Thread() {
     		public void run() {
     			try
@@ -338,7 +339,7 @@ public class Feedback {
         FeedbackHelper.INSTANCE.Reviewed();
 
         try {
-        	midlet.platformRequest("http://store.ovi.mobi/content/"+contentID);
+        	midlet.platformRequest("http://store.ovi.mobi/content/"+contentID+"/comments/add");
         } catch (Exception e) {} 
     }
 
@@ -360,10 +361,13 @@ public class Feedback {
 
 
         // Body text including hardware, firmware and software info
-        String body = stringReplace(FeedbackBody,"{0}" , "DeviceName");
-        body = stringReplace(FeedbackBody,"{1}" , "DeviceManufacturer");
-        body = stringReplace(FeedbackBody,"{2}" , "DeviceFirmwareVersion");
-        body = stringReplace(FeedbackBody,"{3}" , "DeviceHardwareVersion");
+        String platformInfo = System.getProperty("microedition.platform");
+        String deviceName = platformInfo.substring(0,Math.max(platformInfo.indexOf('/'),0));
+        String body = stringReplace(FeedbackBody,"{0}" , deviceName);
+        String firmWareVersion = platformInfo.substring(Math.max(platformInfo.indexOf('/'),0)+1);
+        body = stringReplace(FeedbackBody,"{1}" , "Nokia");
+        body = stringReplace(FeedbackBody,"{2}" , firmWareVersion);
+        body = stringReplace(FeedbackBody,"{3}" , "N/A");
         body = stringReplace(FeedbackBody,"{4}" , version);
         body = stringReplace(FeedbackBody,"{5}" , company);
 

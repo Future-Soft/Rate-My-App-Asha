@@ -1,5 +1,7 @@
 package com.future.ratemyapp.helpers;
 
+import javax.microedition.midlet.MIDlet;
+
 public class FeedbackHelper {
 
 	public static final int FeedbackStateInactive		 = 0;
@@ -26,11 +28,20 @@ public class FeedbackHelper {
     private long lastLaunchDate = System.currentTimeMillis();
     
     public boolean countDays;
+    
+    private MIDlet midlet;
+	private String contentID;
 
     
     private FeedbackHelper()
     {
     	state = FeedbackStateActive;
+    }
+    
+    public void setParams(MIDlet midlet, String contentID)
+    {
+    	this.midlet = midlet;
+    	this.contentID = contentID;
     }
     
     /**
@@ -126,6 +137,9 @@ public class FeedbackHelper {
     {
         Reviewed();
         
+        try {
+        	midlet.platformRequest("http://store.ovi.mobi/content/"+contentID+"/comments/add");
+        } catch (Exception e) {} 
     }
 
 	/**
